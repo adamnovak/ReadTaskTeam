@@ -65,7 +65,6 @@ record Position {
   Strand strand;
 }
 
-@namespace("org.ga4gh.models.graph")
 /**
 A `Segment` represents a piece of sequence, which is optionally joined onto
 other `Segment`s of sequence at each end, forming a graph. The bases for a
@@ -76,7 +75,7 @@ record Segment {
   The sequence ID and start index of this `Segment`. This base is always
   included in the segment, regardless of strand.
   */
-  org.ga4gh.models.Position start;
+  Position start;
 
   /**
   The length of this `Segment`'s sequence, walking away from `start` in the
@@ -96,10 +95,9 @@ record Segment {
   may only be set if that base is similarly at one end of the underlying
   sequence, being read in the appropriate direction.
   */
-  union { null, org.ga4gh.models.Position } startJoin, endJoin;
+  union { null, Position } startJoin, endJoin;
 }
 
-@namespace("org.ga4gh.models.graph")
 /**
 A `Path` is an ordered list of `Segment`s. In general any contiguous path
 through a sequence graph, with no novel adjacencies, can be represented by a

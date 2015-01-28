@@ -52,11 +52,10 @@ SearchVariantSetsResponse searchVariantSets(
   SearchVariantSetsRequest request) throws GAException;
 
 
-/******************  /graph/variantsets/{id}/sequences/search  *********************/
-@namespace("org.ga4gh.methods.graph")
+/******************  /variantsets/{id}/sequences/search  *********************/
 /**
-This request maps to the body of `POST /graph/variantsets/{id}/sequences/search`
-as JSON.
+This request maps to the body of `POST /variantsets/{id}/sequences/search` as
+JSON.
 */
 record SearchVariantSetSequencesRequest {
   /**
@@ -79,17 +78,16 @@ record SearchVariantSetSequencesRequest {
   union { null, string } pageToken = null;
 }
 
-@namespace("org.ga4gh.methods.graph")
 /**
-This is the response from `POST /graph/variantsets/{id}/sequences/search`
-expressed as JSON.
+This is the response from `POST /variantsets/{id}/sequences/search` expressed as
+JSON.
 */
 record SearchVariantSetSequencesResponse {
   /**
   The list of `Segment`s for matching sequences from the novel sequence graph
   for the `VariantSet`.
   */
-  array<org.ga4gh.models.graph.Segment> segments = [];
+  array<org.ga4gh.models.Segment> segments = [];
 
   /**
   The continuation token, which is used to page through large result sets.
@@ -102,30 +100,28 @@ record SearchVariantSetSequencesResponse {
 /**
 Gets a list of `Segment` matching the search criteria.
 
-`POST /graph/variantsets/{id}/sequences/search` must accept a JSON version of
+`POST /variantsets/{id}/sequences/search` must accept a JSON version of
 `SearchVariantSetSegmentsRequest` as the post body and will return a JSON
 version of `SearchVariantSetSegmentsResponse`.
 */
-org.ga4gh.methods.graph.SearchVariantSetSequencesResponse
+SearchVariantSetSequencesResponse
   searchVariantSetSequences(
   /**
-  This request maps to the body of `POST
-  /graph/variantsets/{id}/sequences/search` as JSON.
+  This request maps to the body of `POST variantsets/{id}/sequences/search` as
+  /JSON.
   */
-  org.ga4gh.methods.graph.SearchVariantSetSequencesRequest request)
-  throws GAException;
+  SearchVariantSetSequencesRequest request) throws GAException;
 
-/*****************  /graph/variantsets/{id}/sequences/{id}  *******************/
-@namespace("org.ga4gh.methods.graph")
+/*****************  /variantsets/{id}/sequences/{id}  *******************/
 /**
 Gets a `Segment` describing a novel sequence in a `VariantSet`, by sequence ID.
 
-`GET /graph/variantsets/{id}/sequences/{id}` will return a JSON version of a
+`GET /variantsets/{id}/sequences/{id}` will return a JSON version of a
 `Segment` covering the novel sequence with the given ID, and describing where it
 is joined onto its parent sequences.
 
 */
-org.ga4gh.models.graph.Segment getVariantSetSequence(
+org.ga4gh.models.Segment getVariantSetSequence(
   /**
   The ID of the `VariantSet` which provides the novel sequence.
   */
@@ -222,9 +218,8 @@ SearchVariantsResponse searchVariants(
   /** This request maps to the body of `POST /variants/search` as JSON. */
   SearchVariantsRequest request) throws GAException;
 
-@namespace("org.ga4gh.methods.graph")
-/******************  /graph/alleles/search  *********************/
-/** This request maps to the body of `POST /graph/alleles/search` as JSON. */
+/******************  /alleles/search  *********************/
+/** This request maps to the body of `POST /alleles/search` as JSON. */
 record SearchAllelesRequest {
   /** Required. The IDs of the variant sets to search over. */
   array<string> variantSetIds = [];
@@ -263,14 +258,13 @@ record SearchAllelesRequest {
   union { null, string } pageToken = null;
 }
 
-@namespace("org.ga4gh.methods.graph")
-/** This is the response from `POST /graph/alleles/search` expressed as JSON. */
+/** This is the response from `POST /alleles/search` expressed as JSON. */
 record SearchAllelesResponse {
   /**
   The list of matching alleles. An `Allele` should be returned if a `Segment`
   in its `Path` overlaps with the specified range.
   */
-  array<org.ga4gh.models.graph.Allele> alleles = [];
+  array<org.ga4gh.models.Allele> alleles = [];
 
   /**
   The continuation token, which is used to page through large result sets.
@@ -283,22 +277,21 @@ record SearchAllelesResponse {
 /**
 Gets a list of `Allele`s matching the search criteria.
 
-`POST /graph/alleles/search` must accept a JSON version of
-`SearchAllelesRequest` as the post body and will return a JSON version of
-`SearchAllelesResponse`.
+`POST /alleles/search` must accept a JSON version of `SearchAllelesRequest` as
+the post body and will return a JSON version of `SearchAllelesResponse`.
 */
-org.ga4gh.methods.graph.SearchAllelesResponse searchAlleles(
+SearchAllelesResponse searchAlleles(
     /**
-    This request maps to the body of `POST /graph/alleles/search` as JSON.
+    This request maps to the body of `POST /alleles/search` as JSON.
     */
-    org.ga4gh.methods.graph.SearchAllelesRequest request) throws GAException;
+    SearchAllelesRequest request) throws GAException;
 
-/**************** /graph/alleles/{id} *******************/
+/**************** /alleles/{id} *******************/
 /**
 Gets an `Allele` by ID.
-`GET /graph/alleles/{id}` will return a JSON version of `Allele`.
+`GET /alleles/{id}` will return a JSON version of `Allele`.
 */
-org.ga4gh.models.graph.Allele getAllele(
+org.ga4gh.models.Allele getAllele(
   /**
   The ID of the `Allele`.
   */
@@ -367,9 +360,8 @@ org.ga4gh.models.CallSet getCallSet(
   */
   string id) throws GAException;
 
-@namespace("org.ga4gh.methods.graph")
-/****************** /graph/calls/search *********************/
-/** This request maps to the body of `POST /graph/calls/search` as JSON. */
+/****************** /calls/search *********************/
+/** This request maps to the body of `POST /calls/search` as JSON. */
 record SearchCallsRequest {
 
   /**
@@ -406,9 +398,8 @@ record SearchCallsRequest {
   union { null, string } pageToken = null;
 }
 
-@namespace("org.ga4gh.methods.graph")
 /**
-This is the response from `POST /graph/calls/search` expressed as JSON.
+This is the response from `POST /calls/search` expressed as JSON.
 */
 record SearchCallsResponse {
   /** The list of matching calls. */
@@ -424,13 +415,13 @@ record SearchCallsResponse {
 
 /**
 Gets a list of `Call` matching the search criteria.
-`POST /graph/calls/search` must accept a JSON version of
+`POST /calls/search` must accept a JSON version of
 `SearchCallsRequest` as the post body and will return a JSON version of
 `SearchCallsResponse`.
 */
-org.ga4gh.methods.graph.SearchCallsResponse searchCalls(
-  /** This request maps to the body of `POST /graph/calls/search` as JSON. */
-  org.ga4gh.methods.graph.SearchCallsRequest request) throws GAException;
+SearchCallsResponse searchCalls(
+  /** This request maps to the body of `POST /calls/search` as JSON. */
+  SearchCallsRequest request) throws GAException;
 
 
 }

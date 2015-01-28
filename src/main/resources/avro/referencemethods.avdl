@@ -250,13 +250,12 @@ ListReferenceBasesResponse getReferenceBases(
   /** Additional request parameters to restrict the query. */
   ListReferenceBasesRequest request) throws GAException;
 
-/****************  /graph/sequence/{id}  *******************/
-@namespace("org.ga4gh.methods.graph")
+/****************  /sequence/{id}  *******************/
 /**
-The query parameters for a request to `GET /graph/sequence/{id}`, for
+The query parameters for a request to `GET /sequence/{id}`, for
 example:
 
-`GET /graph/sequence/{id}?start=100&end=200`
+`GET /sequence/{id}?start=100&end=200`
 */
 record GetSequenceRequest {
   /**
@@ -281,8 +280,7 @@ record GetSequenceRequest {
   union { null, string } pageToken = null;
 }
 
-@namespace("org.ga4gh.methods.graph")
-/** The response from `GET /graph/sequence/{id}` expressed as JSON. */
+/** The response from `GET /sequence/{id}` expressed as JSON. */
 record GetSequenceResponse {
   /**
   The offset position (0-based) of the returned string in the sequence. This
@@ -306,14 +304,14 @@ record GetSequenceResponse {
 
 /**
 Lists bases by sequence ID and optional range.
-`GET /graph/sequence/{id}` will return a JSON version of
+`GET /sequence/{id}` will return a JSON version of
 `GetSequenceResponse`. Works for sequences with associated `Reference`s, as well
 as novel sequences that come with `VariantSet`s.
 */
-org.ga4gh.methods.graph.GetSequenceResponse getSequence(
+GetSequenceResponse getSequence(
     /** The ID of the sequence. */
     string id,
     /** Additional request parameters to restrict the query. */
-    org.ga4gh.methods.graph.GetSequenceRequest request) throws GAException;
+    GetSequenceRequest request) throws GAException;
 
 }

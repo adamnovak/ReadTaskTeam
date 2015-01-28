@@ -182,7 +182,6 @@ record LinearAlignment {
   array<CigarUnit> cigar = [];
 }
 
-@namespace("org.ga4gh.models.graph")
 /**
 A string-to-reference-graph alignment can be represented by one CIGAR string and
 one `Path` through multiple `Reference`s, against which the CIGAR string is
@@ -213,7 +212,7 @@ record GraphAlignment {
   Represents the local alignment of this sequence (alignment matches, indels,
   etc) versus the `Path`.
   */
-  array<org.ga4gh.models.CigarUnit> cigar = [];
+  array<CigarUnit> cigar = [];
 }
 
 
@@ -273,7 +272,7 @@ record ReadAlignment {
   The alignment for this alignment record. This field will be
   null if the read is unmapped.
   */
-  union { null, LinearAlignment, org.ga4gh.models.graph.GraphAlignment }
+  union { null, LinearAlignment, GraphAlignment }
     alignment = null;
 
 

@@ -25,7 +25,7 @@ record Reference {
 
   If this is not null, `graphChecksum` must also not be null.
   */
-  union { null, org.ga4gh.models.graph.Segment } segment = null;
+  union { null, Segment } segment = null;
 
   /**
   MD5 checksum uniquely representing this `Reference` and its position in the

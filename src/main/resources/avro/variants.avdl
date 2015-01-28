@@ -278,7 +278,6 @@ record Variant {
 }
 
 
-@namespace("org.ga4gh.models.graph")
 /**
 `Allele`s are the key component of the "allelic" model of variation: they are
 single objects that are present in some copy number.
