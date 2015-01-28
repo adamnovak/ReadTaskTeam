@@ -18,6 +18,13 @@ record SearchReferenceSetsRequest {
   array<string> md5checksums = [];
 
   /**
+  If present, return the reference sets which match any of the given
+  `structuralMd5Checksum`s. See `ReferenceSet::structuralMd5Checksum` for
+  details.
+  */
+  array<string> structuralMd5Checksums = [];
+
+  /**
   If present, return reference sets for which the accession
   matches this string. Best to give a version number (e.g. `GCF_000001405.26`).
   If only the main accession number is given then all records with
@@ -103,6 +110,19 @@ record SearchReferencesRequest {
   See `Reference::md5checksum` for details.
   */
   array<string> md5checksums = [];
+
+
+  /**
+  If present, return references which match any of the given
+  `structuralMd5Checksum`s. See `Reference::structuralMd5Checksum` for details.
+  */
+  array<string> structuralMd5Checksums = [];
+
+  /**
+  If nonempty, return references that are joined onto references with one of the
+  specified IDs.
+  */
+  array<string> parentReferenceIds = [];
 
   /**
   If present, return references for which the accession
@@ -229,5 +249,71 @@ ListReferenceBasesResponse getReferenceBases(
   string id,
   /** Additional request parameters to restrict the query. */
   ListReferenceBasesRequest request) throws GAException;
+
+/****************  /graph/sequence/{id}  *******************/
+@namespace("org.ga4gh.methods.graph")
+/**
+The query parameters for a request to `GET /graph/sequence/{id}`, for
+example:
+
+`GET /graph/sequence/{id}?start=100&end=200`
+*/
+record GetSequenceRequest {
+  /**
+  The start position (0-based) of this query. Defaults to 0.
+  Genomic positions are non-negative integers less than segment length.
+  Requests spanning the join of circular genomes are represented as
+  two requests one on each side of the join (position 0).
+  */
+  long start = 0;
+
+  /**
+  The end position (0-based, exclusive) of this query. Defaults
+  to the length of this `Segment`.
+  */
+  union { null, long } end = null;
+
+  /**
+  The continuation token, which is used to page through large result sets.
+  To get the next page of results, set this parameter to the value of
+  `nextPageToken` from the previous response.
+  */
+  union { null, string } pageToken = null;
+}
+
+@namespace("org.ga4gh.methods.graph")
+/** The response from `GET /graph/sequence/{id}` expressed as JSON. */
+record GetSequenceResponse {
+  /**
+  The offset position (0-based) of the returned string in the sequence. This
+  value will differ for each page in a paginated request.
+   */
+  long offset = 0;
+
+  /**
+  A substring of the sequence requested. Bases are represented as IUPAC-IUB
+  codes; this string matches the regexp `[ACGTMRWSYKVHDBN]*`.
+  */
+  string sequence;
+
+  /**
+  The continuation token, which is used to page through large result sets.
+  Provide this value in a subsequent request to return the next page of
+  results. This field will be empty if there aren't any additional results.
+  */
+  union { null, string } nextPageToken = null;
+}
+
+/**
+Lists bases by sequence ID and optional range.
+`GET /graph/sequence/{id}` will return a JSON version of
+`GetSequenceResponse`. Works for sequences with associated `Reference`s, as well
+as novel sequences that come with `VariantSet`s.
+*/
+org.ga4gh.methods.graph.GetSequenceResponse getSequence(
+    /** The ID of the sequence. */
+    string id,
+    /** Additional request parameters to restrict the query. */
+    org.ga4gh.methods.graph.GetSequenceRequest request) throws GAException;
 
 }
