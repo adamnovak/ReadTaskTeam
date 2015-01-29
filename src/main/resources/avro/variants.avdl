@@ -113,20 +113,22 @@ record Call {
   union { null, string } callSetId;
 
   /**
-  The ID of the `Variant` that this `Call` belongs to. Must be set if the `Call`
-  belongs to a `Variant` and is not currently stored in that `Variant`'s `calls`
-  array. Only one `Call` may be associated with a particular `Variant`-`Allele`
+  The ID of the `Variant` that this `Call` belongs to.
+  
+  Only one `Call` may be associated with a particular `Variant`-`Allele`
   combination in a particular `CallSet`.
   */
   union { null, string } variantId;
 
   /**
-  The ID of the `Allele` that this `Call` is calling the copy number of. Must be
-  set if this `Call` is representing the copy number of an `Allele`. If set, the
-  `Call` need not be associated with a `Variant`, and can only be associated
-  with `Variant`s for which this `Allele` is an option. Only one `Call` may be
-  associated with a particular `Variant`-`Allele` combination in a particular
-  `CallSet`.
+  The ID of the `Allele` that this `Call` is calling the copy number of. If set,
+  the `Call` need not be associated with a `Variant`.
+  
+  If a `Call` is associated with both a `Variant` and an `Allele`, the `Allele`
+  must be contained in that `Variant`.
+  
+  Only one `Call` may be associated with a particular `Variant`-`Allele`
+  combination in a particular `CallSet`.
   */
   union { null, string } alleleId;
 
@@ -140,20 +142,18 @@ record Call {
   union { null, string } callSetName = null;
 
   /**
-  The genotype of this variant call. A 0 value represents the reference allele
-  of the associated `Variant`, or an instance of the associated `Allele` if
-  there is no associated `Variant`. Any other value is a 1-based index into the
-  alternate alleles of the associated `Variant`, or is illegal if there is no
-  associated `Variant`.
+  The genotype of this variant call. Must be null if there is an associated
+  `Allele`, which implies a uniform genotype of that `Allele`.
+  
+  A 0 value represents the reference allele of the associated `Variant`. Any
+  other value is a 1-based index into the alternate alleles of the associated
+  `Variant`.
 
   If a variant had a referenceBases field of "T", an alternateBases
   value of ["A", "C"], and the genotype was [2, 1], that would mean the call
   represented the heterozygous value "CA" for this variant. If the genotype
   was instead [0, 1] the represented value would be "TA". Ordering of the
   genotype values is important if the phaseset field is present.
-
-  If the `Call` is associated with only an `Allele`, all entries must indicate
-  that `Allele`.
   */
   union { null, array<int> } genotype = null;
 
@@ -161,9 +161,9 @@ record Call {
   If specified, gives the total number of copies of whatever is being called. If
   the `Call` is associated only with a `Variant`, it is the total copy number of
   all `Allele`s of a `Variant`. If the `Call` is associated with only an
-  `Allele`, it is the total copy number of that `Allele` in all `Variant`s. If
-  the `Call` is associated with an `Allele` and a `Variant`, it is the copy
-  number of that `Allele` in that `Variant`.
+  `Allele`, it is the total copy number of that `Allele` (including copies
+  associated with `Variant`s). If the `Call` is associated with an `Allele` and
+  a `Variant`, it is the copy number of that `Allele` in that `Variant`.
   */
   union { null, double } totalCopies = null;
 
@@ -172,10 +172,14 @@ record Call {
   the phase of the bases and is consistent with any other variant calls on
   the same contig which have the same phaseset string.
 
-  If this field is an array, successive entries are associated with the
-  corresponding entries in the `genotype` array. Entries in `Call`s' `genotype`
-  arrays that are associated with the same `phaseset` string occur on the same
-  molecule of DNA.
+  If this field is an array, each entry is associated with the corresponding
+  entry in the `genotype` array, or with an instance of the associated `Allele`
+  if one exists. Allele instances that are associated with the same `phaseset`
+  string occur on the same molecule of DNA.
+  
+  For example, if one `Call` has `genotype` [0, 1], another is associated with
+  `Allele` 3, and both have a `phaseset` of ["maternal", "paternal"], then one
+  DNA molecule carries 0, 3 and another carries 1, 3.
   */
   union { null, string, array<string> } phaseset = null;
 
@@ -270,7 +274,8 @@ record Variant {
 
   /**
   The variant calls for this particular variant. Each one represents the
-  determination of genotype with respect to this variant.
+  determination of genotype with respect to this variant. `Call`s in this array
+  are implicitly associated with this `Variant`.
 
   Calls are also available through the `searchCalls()` API method.
   */
@@ -295,7 +300,7 @@ Note that `Path`s cannot follow adjacencies not represented in the augmented
 sequence graph. If  an `Allele` that spans a novel deletion is required, for
 example, a new empty-string sequence should exist to describe that deletion
 adjacency, with a `Segment` describing that sequence available through
-`searchVariantSetSequences()`.
+`searchVariantSetSequences()` or `getVariantSetSequence()`.
 */
 record Allele {
   /**
