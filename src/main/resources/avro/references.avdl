@@ -28,24 +28,22 @@ record Reference {
   union { null, Segment } segment = null;
 
   /**
-  MD5 checksum uniquely representing this `Reference` and its position in the
-  `ReferenceSet`'s sequence graph, as a lower-case hexadecimal string.
+  The structural MD5 checksum uniquely representing this `Reference` and its
+  position in the `ReferenceSet`'s sequence graph, as a lower-case hexadecimal
+  string.
 
   If segment.startJoin and segment.endJoin are both null, this is equal to
   md5checksum.
 
   Otherwise, this is the MD5 of the md5checksum, segment.startJoin's MD5
   checksum, and segment.endJoin's MD5 checksum, in that order. If one
-  SegmentJoinLocation is null, an MD5 checksum consisting of 32 "0" chartacters
+  SegmentJoinLocation is null, an MD5 checksum consisting of 32 "0" characters
   is used for its contribution.
 
   The MD5 checksum of a `Position` on a sequence with a `Reference` is
   calculated by MD5 hashing the concatenation of the md5checksum for that
   `Reference`, the index as a decimal string, and "+" or "-" as appropriate
-  for the `SegmentSide`, in that order.
-
-  Note that a `Reference`'s sequence may not join onto itself, or anything that
-  joins onto it, or this hash would not be defined.
+  for the strand, in that order.
 
   If this is not null, `segment` must also not be null.
   */

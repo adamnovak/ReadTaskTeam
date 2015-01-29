@@ -9,11 +9,12 @@ join onto a side of a base in another sequence. The sequence being joined onto
 is a "parent" of the other sequence, which is a "child", and the graph is
 constrained such that parent-child relationships are acyclic.
 
-A sequence graph here is represented by a set of `Segment`s, each covering
-the entirety of a sequence and describing where its ends are joined.
+A sequence graph is represented by a set of `Segment`s, selecting the regions of
+sequence and describing the end joins that make up the graph.
 
 A `Path` through a sequence graph is an array of `Segment`s covering subregions
-of sequences, connected by joins from the graph.
+of sequences from the graph. Each pair of consecutive `Segment`s is connected by
+a join from the graph.
 */
 protocol Common {
 
@@ -30,28 +31,29 @@ enum Strand {
 }
 
 /**
-An abstraction for referring to a genomic position, in relation to some
-already known reference. For now, represents a genomic position as a reference
-name, a base number on that reference (0-based), and a flag to say if it's the
-forward or reverse strand that we're talking about.
+An abstraction for referring to a genomic position, in relation to some already
+known sequence. For now, represents a genomic position as a reference name or
+sequence ID, a base number on that reference (0-based), and a flag to say if
+it's the forward or reverse strand that we're talking about.
 */
-// TODO: Add support here for universally unique base IDs.
 record Position {
   /**
   The name of the reference (or, more technically, the scaffold) in whatever
   reference set is being used. Does not generally include a "chr" prefix, so for
   example "X" would be used for the X chromosome.
 
-  If `id` is null, this must not be null.
+  If `sequenceId` is null, this must not be null.
   */
   union { null, string } referenceName = null;
 
   /**
-  The ID of the sequence on which the `Position` is located.
+  The ID of the sequence on which the `Position` is located. This may be a
+  `Reference` sequence, or a novel piece of sequence associated with a
+  `VariantSet`.
 
   If `referenceName` is null, this must not be null.
   */
-  union { null, string } id = null;
+  union { null, string } sequenceId = null;
 
   /**
   The 0-based offset from the start of the forward strand for that reference.
@@ -60,7 +62,9 @@ record Position {
   long position;
 
   /**
-  Strand the position is associated with.
+  Strand the position is associated with. `POS_STRAND` represents the forward
+  strand, or equivalently the left side of a base, and `NEG_STRAND` represents
+  the reverse strand, or equivalently the right side of a base.
   */
   Strand strand;
 }
@@ -68,7 +72,7 @@ record Position {
 /**
 A `Segment` represents a piece of sequence, which is optionally joined onto
 other `Segment`s of sequence at each end, forming a graph. The bases for a
-`Segment` are available through the `ListSegmentBases` API call.
+sequence are available through the `getSequence` API call.
 */
 record Segment {
   /**
@@ -78,8 +82,12 @@ record Segment {
   Position start;
 
   /**
-  The length of this `Segment`'s sequence, walking away from `start` in the
-  direction of `start.side`.
+  The length of this `Segment`'s sequence. If `start` is on the forward strand,
+  the `Segment` contains the range [`start.position`, `start.position` +
+  `length`). If `start` is on the reverse strand, the `Segment` contains the
+  range (`start.position` - `length`, `start.position`]. This is equivalent to
+  starting from the side indicated by `start`, and traversing through that base
+  out to the specified length.
   */
   long length;
 
@@ -89,11 +97,17 @@ record Segment {
   `Segment`s covering the sequences onto which this `Segment` is joined are
   called its "parents".
 
-  `startJoin` is the join on the base at `start`, and may only be set if `start`
-  is at one end of the underlying sequence, pointing inwards. Similarly,
-  `endJoin` is the join at on the base at the opposite end of the `Segment`, and
-  may only be set if that base is similarly at one end of the underlying
-  sequence, being read in the appropriate direction.
+  Joins may occur on the outer sides of the terminal bases in a sequence: the
+  left side of the base at index 0, and the right side of the base with maximum
+  index. These are the "terminal sides" of the sequence.
+  
+  `startJoin` is the join on the side indicated by `start`, and may only be set
+  if that side is a terminal side. Similarly, `endJoin` is the join on the
+  opposite side of the piece of sequence selected by the segment, and may only
+  be set if that side is a terminal side.
+  
+  The value of `startJoin` or `endJoin`, if set, is the side to which the
+  corresponding side of this `Sequence` is connected.
   */
   union { null, Position } startJoin, endJoin;
 }
@@ -105,10 +119,8 @@ through a sequence graph, with no novel adjacencies, can be represented by a
 */
 record Path {
   /**
-  We require that each adjacent pair of `Segment`s in a `Path` be related by a
-  join of one onto the end of the other that is present in the underlying
-  sequence graph. We also require that the whole array describes a single linear
-  path.
+  We require that one of each consecutive pair of `Segment`s in a `Path` be
+  joined onto the other.
   */
   array<Segment> segments = [];
 }
