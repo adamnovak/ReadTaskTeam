@@ -241,7 +241,7 @@ ListReferenceBasesResponse getReferenceBases(
 The query parameters for a request to `GET /sequence/{id}`, for
 example:
 
-`GET /sequence/{id}?start=100&end=200`
+`GET /sequence/c95d4520-8c63-45f1-924d-6a9604a919fb?start=100&end=200`
 */
 record GetSequenceRequest {
   /**
@@ -289,13 +289,13 @@ record GetSequenceResponse {
 }
 
 /**
-Lists bases by sequence ID and optional range.
+Lists bases by sequence UUID and optional range.
 `GET /sequence/{id}` will return a JSON version of
 `GetSequenceResponse`. Works for sequences with associated `Reference`s, as well
 as novel sequences that come with `VariantSet`s.
 */
 GetSequenceResponse getSequence(
-    /** The ID of the sequence. */
+    /** The UUID of the sequence. */
     string id,
     /** Additional request parameters to restrict the query. */
     GetSequenceRequest request) throws GAException;

@@ -19,15 +19,16 @@ record Reference {
   shorter if only a subrange of a sequence is to be included in the
   `ReferenceSet`.
 
-  The sequence ID of the `Segment` is equal to ID of the `Reference`. The actual
-  sequence bases for a `Reference` are available through the `getSequence()` API
-  call on this `Reference`'s sequence.
+  The sequence UUID of the `Segment` is equal to ID of the `Reference`. The
+  actual sequence bases for a `Reference` are available through the
+  `getSequence()` API call on this `Reference`'s sequence.
   */
   union { null, Segment } segment = null;
 
   /**
-  The reference ID. Unique within the repository. If null, `segment` must be
-  set.
+  The reference ID. Unique within the repository. A sequence with this ID
+  exists, containing the reference's bases. If null, `segment` must be set, and
+  the sequence ID field from `segment` is used.
   */
   union { null, string } id = null;
 

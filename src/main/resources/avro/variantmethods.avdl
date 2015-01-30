@@ -60,7 +60,7 @@ JSON.
 record SearchVariantSetSequencesRequest {
   /**
   If nonempty, return `Segment`s describing novel sequences in the `VariantSet`
-  that are joined onto sequences with one of the specified IDs.
+  that are joined onto sequences with one of the specified UUIDs.
   */
   array<string> parentIds = [];
 
@@ -110,18 +110,19 @@ SearchVariantSetSequencesResponse searchVariantSetSequences(
   */
   string variantSetId,
   /**
-  This request maps to the body of `POST variantsets/{id}/sequences/search` as   JSON.
+  This request maps to the body of `POST variantsets/{id}/sequences/search` as
+  JSON.
   */
   SearchVariantSetSequencesRequest request) throws GAException;
 
 /*****************  /variantsets/{id}/sequences/{id}  *******************/
 /**
-Gets a `Segment` describing a novel sequence in a `VariantSet`, by sequence ID.
+Gets a `Segment` describing a novel sequence in a `VariantSet`, by sequence
+UUID.
 
-`GET /variantsets/{id}/sequences/{id}` will return a JSON version of a
-`Segment` covering the novel sequence with the given ID, and describing where it
-is joined onto its parent sequences.
-
+`GET /variantsets/{id}/sequences/{id}` will return a JSON version of a `Segment`
+covering the novel sequence with the given UUID, and describing where it is
+joined onto its parent sequences.
 */
 org.ga4gh.models.Segment getVariantSetSequence(
   /**
@@ -129,7 +130,7 @@ org.ga4gh.models.Segment getVariantSetSequence(
   */
   string variantSetId,
   /**
-  The ID of the novel sequence to get a covering `Segment` for.
+  The UUID of the novel sequence to get a covering `Segment` for.
   */
   string sequenceId) throws GAException;
 
@@ -237,7 +238,7 @@ record SearchAllelesRequest {
   array<string> variantSetIds = [];
 
   /**
-  Required. Only return `Allele`s on this sequence.
+  Required. Only return `Allele`s on the sequence with this UUID.
    */
   string sequenceId;
 

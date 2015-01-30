@@ -7,7 +7,8 @@ Many of these types are related to defining sequence graphs. A sequence graph is
 built from a set of "sequences" of base pairs. In the default forward
 orientation, each sequence is specified by the DNA letters of its top strand;
 the bottom strand is the reverse complement. A sequence with Ns (unknown base
-pairs) is called a scaffold, while one without is called a contig.
+pairs) is called a scaffold, while one without is called a contig. Each sequence
+has a UUID, which is used as its ID in the API.
 
 A base pair has a left and a right side. For an A/T base pair in forward
 orientation, with A on the top, the left side of the base pair corresponds with
@@ -67,7 +68,7 @@ record Position {
   union { null, string } referenceName = null;
 
   /**
-  The ID of the sequence on which the `Position` is located. This may be a
+  The UUID of the sequence on which the `Position` is located. This may be a
   `Reference` sequence, or a novel piece of sequence associated with a
   `VariantSet`.
 
