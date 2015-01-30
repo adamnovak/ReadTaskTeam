@@ -20,7 +20,7 @@ record Reference {
   `ReferenceSet`.
 
   The sequence ID of the `Segment` is equal to ID of the `Reference`. The actual
-  sequence bases for a `Reference` are available through the `getSequence` API
+  sequence bases for a `Reference` are available through the `getSequence()` API
   call on this `Reference`'s sequence.
   */
   union { null, Segment } segment = null;
@@ -52,7 +52,7 @@ record Reference {
   `Reference`, the index as a decimal string, and "+" or "-" as appropriate
   for the strand, in that order.
   */
-  string md5Checksum;
+  string md5checksum;
 
   /**
   The name of this reference. (e.g. '22') Also see the

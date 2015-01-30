@@ -18,13 +18,6 @@ record SearchReferenceSetsRequest {
   array<string> md5checksums = [];
 
   /**
-  If present, return the reference sets which match any of the given
-  `structuralMd5Checksum`s. See `ReferenceSet::structuralMd5Checksum` for
-  details.
-  */
-  array<string> structuralMd5Checksums = [];
-
-  /**
   If present, return reference sets for which the accession
   matches this string. Best to give a version number (e.g. `GCF_000001405.26`).
   If only the main accession number is given then all records with
@@ -110,13 +103,6 @@ record SearchReferencesRequest {
   See `Reference::md5checksum` for details.
   */
   array<string> md5checksums = [];
-
-
-  /**
-  If present, return references which match any of the given
-  `structuralMd5Checksum`s. See `Reference::structuralMd5Checksum` for details.
-  */
-  array<string> structuralMd5Checksums = [];
 
   /**
   If nonempty, return references that are joined onto references with one of the

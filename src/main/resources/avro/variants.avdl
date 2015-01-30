@@ -40,6 +40,10 @@ record VariantSetMetadata {
 `Variant` and `CallSet` both belong to a `VariantSet`.
 `VariantSet` belongs to a `Dataset`.
 The variant set is equivalent to a VCF file.
+
+A `VariantSet` can contain novel sequences, which are used to augment the
+sequence graph of its `ReferenceSet`, creating the augmented sequence graph
+against which `Allele`s are interpreted.
 */
 record VariantSet {
   /** The variant set ID. */
@@ -114,8 +118,7 @@ record Call {
 
   /**
   The ID of the `Variant` that this `Call` belongs to.
-  
-  Only one `Call` may be associated with a particular `Variant`-`Allele`
+    Only one `Call` may be associated with a particular `Variant`-`Allele`
   combination in a particular `CallSet`.
   */
   union { null, string } variantId;
@@ -123,11 +126,9 @@ record Call {
   /**
   The ID of the `Allele` that this `Call` is calling the copy number of. If set,
   the `Call` need not be associated with a `Variant`.
-  
-  If a `Call` is associated with both a `Variant` and an `Allele`, the `Allele`
+    If a `Call` is associated with both a `Variant` and an `Allele`, the `Allele`
   must be contained in that `Variant`.
-  
-  Only one `Call` may be associated with a particular `Variant`-`Allele`
+    Only one `Call` may be associated with a particular `Variant`-`Allele`
   combination in a particular `CallSet`.
   */
   union { null, string } alleleId;
@@ -144,8 +145,7 @@ record Call {
   /**
   The genotype of this variant call. Must be null if there is an associated
   `Allele`, which implies a uniform genotype of that `Allele`.
-  
-  A 0 value represents the reference allele of the associated `Variant`. Any
+    A 0 value represents the reference allele of the associated `Variant`. Any
   other value is a 1-based index into the alternate alleles of the associated
   `Variant`.
 
@@ -176,8 +176,7 @@ record Call {
   entry in the `genotype` array, or with an instance of the associated `Allele`
   if one exists. Allele instances that are associated with the same `phaseset`
   string occur on the same molecule of DNA.
-  
-  For example, if one `Call` has `genotype` [0, 1], another is associated with
+    For example, if one `Call` has `genotype` [0, 1], another is associated with
   `Allele` 3, and both have a `phaseset` of ["maternal", "paternal"], then one
   DNA molecule carries 0, 3 and another carries 1, 3.
   */
@@ -297,8 +296,8 @@ general to be any contiguous path through the augmented sequence graph.
 reference and alternate alleles of `Variant`s.
 
 Note that `Path`s cannot follow adjacencies not represented in the augmented
-sequence graph. If  an `Allele` that spans a novel deletion is required, for
-example, a new empty-string sequence should exist to describe that deletion
+sequence graph. For example, if  an `Allele` that spans a novel deletion is
+required, a new empty-string sequence should exist to describe that deletion
 adjacency, with a `Segment` describing that sequence available through
 `searchVariantSetSequences()` or `getVariantSetSequence()`.
 */

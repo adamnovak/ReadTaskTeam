@@ -272,9 +272,7 @@ record ReadAlignment {
   The alignment for this alignment record. This field will be
   null if the read is unmapped.
   */
-  union { null, LinearAlignment, GraphAlignment }
-    alignment = null;
-
+  union { null, LinearAlignment, GraphAlignment } alignment = null;
 
   /**
   Whether this alignment is secondary. Equivalent to SAM flag 0x100.
@@ -292,14 +290,14 @@ record ReadAlignment {
   Supplementary alignments are used in the representation of a chimeric
   alignment, which follows nonreference adjacencies not describable as indels.
   In a chimeric alignment, a read is split into multiple linear alignments that
-  map to different reference contigs. The first linear alignment in the read
-  will be designated as the representative alignment; the remaining linear
-  alignments will be designated as supplementary alignments. These alignments
-  may have different mapping quality scores.
+  may map to different reference contigs. The first alignment in the read will
+  be designated as the representative alignment; the remaining alignments will
+  be designated as supplementary alignments. These alignments may have different
+  mapping quality scores.
 
-  In each linear alignment in a chimeric alignment, the read will be hard
-  clipped. The `alignedSequence` and `alignedQuality` fields in the alignment
-  record will only represent the bases for its respective linear alignment.
+  In each alignment in a chimeric alignment, the read will be hard clipped. The
+  `alignedSequence` and `alignedQuality` fields in the alignment record will
+  only represent the bases for its respective alignment.
   */
   union { boolean, null } supplementaryAlignment = false;
 

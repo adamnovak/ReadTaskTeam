@@ -4,13 +4,24 @@ This protocol defines common types used in the other GA4GH protocols. It does
 not have any methods; it is merely a library of types.
 
 Many of these types are related to defining sequence graphs. A sequence graph is
-a set of linear, possibly empty sequences, where each end of each sequence can
-join onto a side of a base in another sequence. The sequence being joined onto
-is a "parent" of the other sequence, which is a "child", and the graph is
-constrained such that parent-child relationships are acyclic.
+built from a set of "sequences" of base pairs. In the default forward
+orientation, each sequence is specified by the DNA letters of its top strand;
+the bottom strand is the reverse complement. A sequence with Ns (unknown base
+pairs) is called a scaffold, while one without is called a contig.
 
-A sequence graph is represented by a set of `Segment`s, selecting the regions of
-sequence and describing the end joins that make up the graph.
+A base pair has a left and a right side. For an A/T base pair in forward
+orientation, with A on the top, the left side of the base pair corresponds with
+the 5' side of the top base (A), and the 3' side of the bottom, complementary
+base (T). The right side of the base pair is respectively the 3' side of the top
+base and the 5' side of the bottom base.
+
+Each end of each sequence in a sequence graph can join onto a side of a base
+pair in another sequence. The sequence being joined onto is a "parent", and the
+other sequence is a "child". The graph is constrained such that parent-child
+relationships are acyclic.
+
+A `Segment` is a part of a sequence with any joins that occur on each end. A
+sequence graph is represented by a set of `Segment`s.
 
 A `Path` through a sequence graph is an array of `Segment`s covering subregions
 of sequences from the graph. Each pair of consecutive `Segment`s is connected by
@@ -31,16 +42,25 @@ enum Strand {
 }
 
 /**
-An abstraction for referring to a genomic position, in relation to some already
-known sequence. For now, represents a genomic position as a reference name or
-sequence ID, a base number on that reference (0-based), and a flag to say if
-it's the forward or reverse strand that we're talking about.
+A `Position` is a side of a base pair in some already known sequence. A
+`Position` is represented by a sequence name or ID, a base number on that
+sequence (0-based), and a `Strand` to indicate the left or right side.
+
+For example, given the sequence "GTGG", the `Position` on that sequence at
+offset 1 in the forward orientation would be the left side of the T/A base pair.
+The base at this `Position` is "T". Alternately, for offset 1 in the reverse
+orientation, the `Position` would be the right side of the T/A base pair, and
+the base at the `Position` is "A".
+
+Offsets added to a `Position` are interpreted as reading along its strand;
+adding to a reverse strand position actually subtracts from its `position`
+member.
 */
 record Position {
   /**
-  The name of the reference (or, more technically, the scaffold) in whatever
-  reference set is being used. Does not generally include a "chr" prefix, so for
-  example "X" would be used for the X chromosome.
+  The name of the reference sequence in whatever reference set is being used.
+  Does not generally include a "chr" prefix, so for example "X" would be used
+  for the X chromosome.
 
   If `sequenceId` is null, this must not be null.
   */
@@ -56,8 +76,8 @@ record Position {
   union { null, string } sequenceId = null;
 
   /**
-  The 0-based offset from the start of the forward strand for that reference.
-  Genomic positions are non-negative integers less than reference length.
+  The 0-based offset from the start of the forward strand for that sequence.
+  Genomic positions are non-negative integers less than sequence length.
   */
   long position;
 
@@ -72,12 +92,17 @@ record Position {
 /**
 A `Segment` represents a piece of sequence, which is optionally joined onto
 other `Segment`s of sequence at each end, forming a graph. The bases for a
-sequence are available through the `getSequence` API call.
+sequence are available through the `getSequence()` API call.
+
+In the sequence "GTGG", the segment starting at index 1 on the forward strand
+with length 2 is the "TG" on the forward strand. The length-2 segment starting
+at index 1 on the reverse strand is "AC", corresponding to the first two base
+pairs of the sequence, or the last two bases of the reverse complement.
 */
 record Segment {
   /**
   The sequence ID and start index of this `Segment`. This base is always
-  included in the segment, regardless of strand.
+  included in the segment, regardless of orientation.
   */
   Position start;
 
@@ -100,13 +125,11 @@ record Segment {
   Joins may occur on the outer sides of the terminal bases in a sequence: the
   left side of the base at index 0, and the right side of the base with maximum
   index. These are the "terminal sides" of the sequence.
-  
-  `startJoin` is the join on the side indicated by `start`, and may only be set
+    `startJoin` is the join on the side indicated by `start`, and may only be set
   if that side is a terminal side. Similarly, `endJoin` is the join on the
   opposite side of the piece of sequence selected by the segment, and may only
   be set if that side is a terminal side.
-  
-  The value of `startJoin` or `endJoin`, if set, is the side to which the
+    The value of `startJoin` or `endJoin`, if set, is the side to which the
   corresponding side of this `Sequence` is connected.
   */
   union { null, Position } startJoin, endJoin;
