@@ -104,11 +104,13 @@ Gets a list of `Segment` matching the search criteria.
 `SearchVariantSetSegmentsRequest` as the post body and will return a JSON
 version of `SearchVariantSetSegmentsResponse`.
 */
-SearchVariantSetSequencesResponse
-  searchVariantSetSequences(
+SearchVariantSetSequencesResponse searchVariantSetSequences(
   /**
-  This request maps to the body of `POST variantsets/{id}/sequences/search` as
-  /JSON.
+  The ID of the `VariantSet` which provides the novel sequences.
+  */
+  string variantSetId,
+  /**
+  This request maps to the body of `POST variantsets/{id}/sequences/search` as   JSON.
   */
   SearchVariantSetSequencesRequest request) throws GAException;
 
@@ -217,6 +219,16 @@ as the post body and will return a JSON version of `SearchVariantsResponse`.
 SearchVariantsResponse searchVariants(
   /** This request maps to the body of `POST /variants/search` as JSON. */
   SearchVariantsRequest request) throws GAException;
+  /**************** /variants/{id} *******************/
+/**
+Gets a `Variant` by ID.
+`GET /variants/{id}` will return a JSON version of `Variant`.
+*/
+org.ga4gh.models.Variant getVariant(
+  /**
+  The ID of the `Variant`.
+  */
+  string id) throws GAException;
 
 /******************  /alleles/search  *********************/
 /** This request maps to the body of `POST /alleles/search` as JSON. */
