@@ -98,11 +98,11 @@ record SearchVariantSetSequencesResponse {
 }
 
 /**
-Gets a list of `Segment` matching the search criteria.
+Gets `Segment`s covering the sequences that match the search criteria.
 
 `POST /variantsets/{id}/sequences/search` must accept a JSON version of
-`SearchVariantSetSegmentsRequest` as the post body and will return a JSON
-version of `SearchVariantSetSegmentsResponse`.
+`SearchVariantSetSequencesRequest` as the post body and will return a JSON
+version of `SearchVariantSetSequencesResponse`.
 */
 SearchVariantSetSequencesResponse searchVariantSetSequences(
   /**
