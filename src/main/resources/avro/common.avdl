@@ -3,10 +3,27 @@
 This protocol defines common types used in the other GA4GH protocols. It does
 not have any methods; it is merely a library of types.
 
-Many of these types are related to defining sequence graphs. Sequence graph
-concepts can be illustrated on a piece of double-stranded DNA with two nicks in
-it, one on the top strand and one on the bottom strand. Here is an example where
-the top strand is GGTGGNG.
+##Sequences, Segments, and References
+
+A sequence is a component in a sequence graph, optionally joined at its ends to
+other sequences. Sequences are not directly retrievable through the API, but
+ranges of their bases can be downloaded.
+
+A `Segment` is a range on a sequence, possibly including the joins at the
+sequence's ends. It does not include base data. When you ask about the novel
+sequences that come in a `VariantSet`, you will get back `Segment`s covering
+them. A `Path` through a sequence graph is a list of `Segment`s.
+
+A `Reference` (defined in references.avdl) is an object that marks a sequence as
+part of a `ReferenceSet`'s sequence graph. It contains a `Segment` covering the
+sequence it belongs to.
+
+##Sequence Graph Concepts
+
+Many of the types defined here are related to defining sequence graphs. Sequence
+graph concepts can be illustrated on a piece of double-stranded DNA with two
+nicks in it, one on the top strand and one on the bottom strand. Here is an
+example where the top strand is GGTGGNG.
 
 ```
           | | <- top strand nick at position (2,+)
@@ -335,9 +352,9 @@ record Position {
 }
 
 /**
-A `Segment` represents a piece of sequence, which is optionally joined onto
-other `Segment`s of sequence at each end, forming a graph. The bases for a
-sequence are available through the `getSequence()` API call.
+A `Segment` is a range on a sequence, possibly including the joins at the
+sequence's ends. It does not include base data. (The bases for a sequence are
+available through the `getSequence()` API call.)
 
 In the sequence "GTGG", the segment starting at index 1 on the forward strand
 with length 2 is the "TG" on the forward strand. The length-2 segment starting
