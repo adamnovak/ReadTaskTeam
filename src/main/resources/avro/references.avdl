@@ -19,7 +19,7 @@ record Reference {
   shorter if only a subrange of a sequence is to be included in the
   `ReferenceSet`.
 
-  The sequence UUID of the `Segment` is equal to ID of the `Reference`. The
+  The sequence ID of the `Segment` is equal to ID of the `Reference`. The
   actual sequence bases for a `Reference` are available through the
   `getSequence()` API call on this `Reference`'s sequence.
   */

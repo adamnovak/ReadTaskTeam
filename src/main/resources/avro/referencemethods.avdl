@@ -289,13 +289,13 @@ record GetSequenceResponse {
 }
 
 /**
-Lists bases by sequence UUID and optional range.
+Lists bases by sequence ID and optional range.
 `GET /sequence/{id}` will return a JSON version of
 `GetSequenceResponse`. Works for sequences with associated `Reference`s, as well
 as novel sequences that come with `VariantSet`s.
 */
 GetSequenceResponse getSequence(
-    /** The UUID of the sequence. */
+    /** The ID of the sequence. */
     string id,
     /** Additional request parameters to restrict the query. */
     GetSequenceRequest request) throws GAException;

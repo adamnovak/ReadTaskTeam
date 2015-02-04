@@ -312,7 +312,7 @@ record Position {
   union { null, string } referenceName = null;
 
   /**
-  The UUID of the sequence on which the `Position` is located. This may be a
+  The ID of the sequence on which the `Position` is located. This may be a
   `Reference` sequence, or a novel piece of sequence associated with a
   `VariantSet`.
 
