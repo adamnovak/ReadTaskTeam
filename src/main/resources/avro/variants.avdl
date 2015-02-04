@@ -312,12 +312,6 @@ record Allele {
   string variantSetId;
 
   /**
-  The time at which this `Allele` was last updated in
-  milliseconds from the epoch.
-  */
-  union { null, long } updated = null;
-
-  /**
   The ordered and oriented `Segment`s of DNA that this `Allele` represents.
   Note that a `Segment` in this `Path` that is 0-length represents the
   adjacency immediately before the named base.
