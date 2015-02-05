@@ -1,5 +1,13 @@
 @namespace("org.ga4gh.models")
 
+/**
+Defines types used by the GA4GH References API.
+
+References API servers may implement either or both of two modes: "classic", in
+which all `Reference`s annotate simple linear strings, and "graph", in which
+`Reference`s annotate sequences in sequence graphs. The "graph" mode is to be
+prefered in new client and server implementations.
+*/
 protocol References {
 
 import idl "common.avdl";
@@ -8,6 +16,11 @@ import idl "common.avdl";
 A `Reference` is a canonical assembled contig, intended to act as a
 reference coordinate space for other genomic annotations. A single
 `Reference` might represent the human chromosome 1, for instance.
+
+An API server that supports the "graph" mode must always set the `segment`
+field. An API server that supports the "classic" mode must always set the `id`
+field. New client and server implementations should prefer the "graph" mode.
+
 */
 record Reference {
 
@@ -22,6 +35,8 @@ record Reference {
   The sequence ID of the `Segment` is equal to ID of the `Reference`. The
   actual sequence bases for a `Reference` are available through the
   `getSequence()` API call on this `Reference`'s sequence.
+
+  If the API server supports the "graph" mode, this field must not be null.
   */
   union { null, Segment } segment = null;
 
@@ -29,6 +44,8 @@ record Reference {
   The reference ID. Unique within the repository. A sequence with this ID
   exists, containing the reference's bases. If null, `segment` must be set, and
   the sequence ID field from `segment` is used.
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, string } id = null;
 

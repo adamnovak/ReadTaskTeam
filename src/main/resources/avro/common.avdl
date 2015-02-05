@@ -104,7 +104,7 @@ configuration such that the middle piece is inverted and a new C/G basepair is
 inserted at the first break, so the result would look like this:
 
 ```
-          | | | |     | | 
+          | | | |     | |
 5' -------   -   -----   ----------  3'
      G   G   C   C   A   G   N   G
      C   C   G   G   T   C   N   C
@@ -123,12 +123,12 @@ be defined to carry it. Let us call the existing GGTGGNG reference sequence
 
 ```
     "ref": "nov1":  "ref":
-                
-      - 3' 5' -  3' 5' - 
+      
+      - 3' 5' -  3' 5' -
  ...  G       C        C  ...
  ...  C       G        G  ...
-      - 5' 3' -  5' 3' - 
-   
+      - 5' 3' -  5' 3' -
+
      +1-     +0-      -3+   <- coordinates
 ```
 
@@ -158,12 +158,12 @@ sequence "nov2" has no coordinates, and no positions. It looks like this
 
 ```
     "ref": "nov2":  "ref":
-                
-      - 3' 5'    3' 5' - 
+      
+      - 3' 5'    3' 5' -
  ...  A                G  ...
  ...  T                C  ...
-      - 5' 3'    5' 3' - 
-   
+      - 5' 3'    5' 3' -
+
      -2+              +4-   <- coordinates
 ```
 
@@ -179,7 +179,7 @@ length = 0
 end = null
 endJoin = (4,+), "ref"
 ```
-All its information will be in its startJoin and endJoin values. 
+All its information will be in its startJoin and endJoin values.
 
 Defined by their top strands, we now have three reference sequences:
 

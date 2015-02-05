@@ -1,4 +1,17 @@
 @namespace("org.ga4gh.models")
+
+/**
+Defines types used by the GA4GH Variants API.
+
+Variants API servers may implement either or both of two modes: "classic", in
+which all variation is described in terms of `Variant`s, and "graph", in which
+all variation is associated with `Allele`s which may participate in `Varaints`
+or be called on their own. The "graph" mode is to be prefered in new client and
+server implementations.
+
+The `sendsMode()` method in the References API may be used to determine if a
+server sends data in a given mode.
+*/
 protocol Variants {
 
 import idl "common.avdl";
@@ -104,6 +117,9 @@ particular `Variant`, or the copy number of a particular `Allele`.
 It may include associated information such as quality
 and phasing. For example, a call might assign a probability of 0.32 to
 the occurrence of a SNP named rs1234 in a call set with the name NA12345.
+
+If the API server supports the "classic" mode, a `Call` may not be associated
+with both a `Variant` and an `Allele`.
 */
 record Call {
 
@@ -121,6 +137,9 @@ record Call {
 
   Only one `Call` may be associated with a particular `Variant`-`Allele`
   combination in a particular `CallSet`.
+
+  If the API server supports the "classic" mode, a `Call` may not be associated
+  with both a `Variant` and an `Allele`.
   */
   union { null, string } variantId;
 
@@ -133,6 +152,9 @@ record Call {
 
   Only one `Call` may be associated with a particular `Variant`-`Allele`
   combination in a particular `CallSet`.
+
+  If the API server supports the "classic" mode, a `Call` may not be associated
+  with both a `Variant` and an `Allele`.
   */
   union { null, string } alleleId;
 
@@ -158,6 +180,9 @@ record Call {
   represented the heterozygous value "CA" for this variant. If the genotype
   was instead [0, 1] the represented value would be "TA". Ordering of the
   genotype values is important if the phaseset field is present.
+
+  If the API server supports the "classic" mode, and this `Call` is associated
+  with a `Variant`, this field must not be null.
   */
   union { null, array<int> } genotype = null;
 
@@ -184,6 +209,10 @@ record Call {
   For example, if one `Call` has `genotype` [0, 1], another is associated with
   `Allele` 3, and both have a `phaseset` of ["maternal", "paternal"], then one
   DNA molecule carries 0, 3 and another carries 1, 3.
+
+  If the API server supports the "classic" mode, and this `Call` is associated
+  with a `Variant`, this field must not be an array. If the API server supports
+  the "graph" mode and not the "classic" mode, it must not return strings here.
   */
   union { null, string, array<string> } phaseset = null;
 
@@ -194,6 +223,9 @@ record Call {
   value ordering is defined by the GL tag in the VCF spec.
 
   Must be null if this `Call` is associated with an `Allele`.
+
+  If the API server supports the "classic" mode, and this `Call` is associated
+  with a `Variant`, this field must not be null.
   */
   union { null, array<double> } genotypeLikelihood = null;
 
@@ -232,6 +264,8 @@ record Variant {
   /**
   The reference on which this variant occurs.
   (e.g. `chr20` or `X`)
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, string } referenceName = null;
 
@@ -241,12 +275,16 @@ record Variant {
   Genomic positions are non-negative integers less than reference length.
   Variants spanning the join of circular genomes are represented as
   two variants one on each side of the join (position 0).
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, long } start = null;
 
   /**
   The end position (exclusive), resulting in [start, end) closed-open interval.
   This is typically calculated by `start + referenceBases.length`.
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, long } end = null;
 
@@ -254,12 +292,16 @@ record Variant {
   The reference bases for this variant. They occupy the range described by
   `referenceName`, `start`, and `end`, which all must be set if this field is
   set.
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, string } referenceBases = null;
 
   /**
   The bases that appear instead of the reference bases. If this field is not
   null, `referenceBases` must be set.
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, array<string> } alternateBases = null;
 
@@ -268,6 +310,8 @@ record Variant {
   is the reference allele, and any others are alternates. If this field is set
   along with `referenceName`, `start`, `end`, `referenceBases`, and/or
   `alternateBases`, those fields must agree with the `Allele`s given here.
+
+  If the API server supports the "graph" mode, this field must not be null.
   */
   union { null, array<string> } alleleIds;
 
@@ -282,6 +326,8 @@ record Variant {
   are implicitly associated with this `Variant`.
 
   Calls are also available through the `searchCalls()` API method.
+
+  If the API server supports the "classic" mode, this field must not be null.
   */
   union { null, array<Call> } calls = null;
 }

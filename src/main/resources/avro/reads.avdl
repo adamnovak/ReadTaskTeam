@@ -217,7 +217,7 @@ record GraphAlignment {
 
 
 /**
-Each read alignment describes a linear alignment with additional information
+Each read alignment describes an alignment with additional information
 about the fragment and the read. A read alignment object is equivalent to a
 line in a SAM file.
 */
@@ -271,6 +271,10 @@ record ReadAlignment {
   /**
   The alignment for this alignment record. This field will be
   null if the read is unmapped.
+
+  If an API server supports "classic" mode, it must not return `GraphAlignment`
+  objects here. If the API server supports the "graph" mode and does not support
+  the "classic" mode, it must not return `LinearAlignment` objects here.
   */
   union { null, LinearAlignment, GraphAlignment } alignment = null;
 
@@ -289,7 +293,7 @@ record ReadAlignment {
   Whether this alignment is supplementary. Equivalent to SAM flag 0x800.
   Supplementary alignments are used in the representation of a chimeric
   alignment, which follows nonreference adjacencies not describable as indels.
-  In a chimeric alignment, a read is split into multiple linear alignments that
+  In a chimeric alignment, a read is split into multiple alignments that
   may map to different reference contigs. The first alignment in the read will
   be designated as the representative alignment; the remaining alignments will
   be designated as supplementary alignments. These alignments may have different
