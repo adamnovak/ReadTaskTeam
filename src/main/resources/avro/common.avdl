@@ -26,23 +26,23 @@ nicks in it, one on the top strand and one on the bottom strand. Here is an
 example where the top strand is GGTGGNG.
 
 ```
-          | | <- top strand nick at position (2,+)
-5' -------   ------------------  3'
+            | <- top strand nick at position (2,+)
+5' -------  -------------------  3'
      G   G   T   G   G   N   G
      C   C   A   C   C   N   C
-3' ---------------   ----------  5'
-position (3,-) -> | |  in bottom strand nick
+3' ----------------  ----------  5'
+                  | <- bottom strand nick at position (3,-)
 
     +0- +1- +2- +3- +4- +5- +6- <- coordinates
 ```
 
-A sequence is a piece of double stranded DNA composed of a series of DNA
+A sequence is a piece of double-stranded DNA composed of a series of DNA
 basepairs. In the default forward orientation a sequence is specified by the DNA
 letters of its top strand, e.g. in this case GGTGGNG, where N indicates an
-unknown base. The basepairs in this example sequence are indexed left to right
-from 0 to 6 relative to this default orientation.  A sequence containing regions
-of uncertainty, denoted by Ns, is called a scaffold, while a sequence in which
-every base is known is called a contig. This sequence is a scaffold.
+unknown base. The basepairs are indexed left to right from 0 to 6 relative to
+this default orientation.  A sequence containing regions of uncertainty, denoted
+by Ns, is called a scaffold, while a sequence in which every base is known is
+called a contig. This sequence is a scaffold.
 
 In its default forward orientation, each basepair has a left or "+" side and a
 right or "-" side. For example, the left side of the T/A basepair in the above
@@ -54,15 +54,15 @@ example, the right side of the following G/C base pair is represented by the
 position (3,-).
 
 One way to think about a position in a sequence is to imagine that the DNA
-double helix is nicked, e.g. as shown in the top strand DNA nick above. When
-double stranded DNA is nicked, the 5'-3' phosphodiester bond between two
-adjacent bases on one strand is broken, leaving an exposed hydroxyl group
-(denoted OH) on the 3' side and an exposed phosphate group on the 5' side
-(denoted -PO4). From a chemical point of view, you can think of a position in a
-sequence as the the location in the double-stranded DNA of the exposed 5'
-phosphate group of a nick. The position (2,+) is the -PO4 part of the top strand
-nick in the diagram above, and the position (3,-) is the -PO4 part of the bottom
-strand nick.
+double helix is nicked, as shown above. When double stranded DNA is nicked, the
+5'-3' phosphodiester bond between two adjacent bases on one strand is broken,
+leaving  an exposed phosphate group on the 5' side, shown by the vertical bar
+(and an exposed hydroxyl group on the 3' side, not shown). From a chemical point
+of view, you can think of a position in a sequence as the the location in the
+double-stranded DNA of the exposed 5' phosphate group created by a nick. The
+position (2,+) is the exposed phosphate group of the top strand nick in the
+diagram above, and the position (3,-) is the same thing in  the bottom strand
+nick.
 
 Each nonempty sequence has a "start", which is the left side of the first
 basepair, and an "end", which is the right side of the last basepair. Each
@@ -104,12 +104,12 @@ configuration such that the middle piece is inverted and a new C/G basepair is
 inserted at the first break, so the result would look like this:
 
 ```
-          | | | |     | |
-5' -------   -   -----   ----------  3'
+            |   |       |
+5' -------  --  ------  -----------  3'
      G   G   C   C   A   G   N   G
      C   C   G   G   T   C   N   C
-3' -------   -   -----   ----------  5'
-          | | | |     | |
+3' --------  --  ------  ----------  5'
+          |   |       |
     +0- +1-  ?  -3+ -2+ +4- +5- +6- <- coordinates
 ```
 
@@ -123,7 +123,7 @@ be defined to carry it. Let us call the existing GGTGGNG reference sequence
 
 ```
     "ref": "nov1":  "ref":
-      
+
       - 3' 5' -  3' 5' -
  ...  G       C        C  ...
  ...  C       G        G  ...
@@ -149,16 +149,16 @@ endJoin = (3, -), "ref"
 
 ```
 
-To describe the other new phosphodiester bond that needs to be added to the
+To describe the other new phosphodiester bonds that need to be added to the
 graph, between (2,+) and (4,+) in "ref", we need to create a new reference
 sequence which contains no basepairs at all; it is the empty sequence of DNA
 basepairs. Let the reference sequence "nov2" be such a reference sequence, with
-start and end joins set to describe this phosphodiester bond. The reference
-sequence "nov2" has no coordinates, and no positions. It looks like this
+start and end joins set to describe these bonds. The reference sequence "nov2"
+has no coordinates, and no positions. It looks like this
 
 ```
     "ref": "nov2":  "ref":
-      
+
       - 3' 5'    3' 5' -
  ...  A                G  ...
  ...  T                C  ...
@@ -167,7 +167,7 @@ sequence "nov2" has no coordinates, and no positions. It looks like this
      -2+              +4-   <- coordinates
 ```
 
-An reference sequence with only start and end joins is describable by a segment
+A reference sequence with only start and end joins is describable by a segment
 with only start and end joins. A segment from the "nov2" reference sequence
 would look like this:
 
@@ -218,6 +218,16 @@ end = null
 endJoin = (4,+), "ref"
 ```
 
+It looks like this:
+
+```
+      --C--
+     |     |
+=G==G==T==G==G==N==G=
+      |     |
+       -----
+```
+
 In this graph, there are two paths from (0,+) on "ref" to (6,-) on the same
 sequence. One of them proceeds directly along "ref", and represents the un-
 rearranged condition, while one detours through "nov1" and "nov2", and
@@ -236,6 +246,16 @@ end = (1,-)
 endJoin = null
 ```
 
+It looks like this:
+
+```
+      --C--
+     |     |
+=G>=G=>T=>G=>G>=N>=G>
+      |     |
+       -----
+```
+
 The rearranged path is describable by a list of 5 segments, 3 of which are the
 contiguous pieces of the "ref" sequence, and 2 of which describe the newly added
 "nov1" and "nov2" sequences:
@@ -248,7 +268,8 @@ length = 2
 end = (1,-)
 endJoin = null
 
-2. Segment with top strand C in the "nov1" reference sequence:
+2. Segment with top strand C in the "nov1" reference sequence, joined to parent
+"ref":
 startJoin = (1,-), "ref"
 start = (0,+)
 length = 1
@@ -262,7 +283,8 @@ length = 2
 end = (2,+)
 endJoin = null
 
-4. Segment with top strand empty in the "nov2" reference sequence:
+4. Segment with top strand empty in the "nov2" reference sequence, joined to
+parent "ref":
 startJoin = (2,+), "ref"
 start = null
 length = 0
@@ -277,6 +299,16 @@ end = (6,-)
 endJoin = null
 ```
 
+It looks like this:
+
+```
+      --C>-
+     ^     |
+=G>=G=<T=<G==G>=N>=G>
+      |     ^
+       -->--
+```
+
 Notice that we always maintain the coordinate system on the reference sequence.
 The inverted middle segment is specified as starting at a position corresponding
 to a nick in the bottom strand of the reference sequence, and continuing on 2
@@ -284,10 +316,11 @@ basepairs in a right-to-left direction along the reference sequence. It does not
 get new coordinates relative to its final orientation or position in the
 rearranged conformation. Also, all of the novel adjacencies in the sequence
 graph involve actual novel segments, even if some of these are empty. This is
-good for bookkeeping. Overall, this scheme allows us to create sequence graphs
-describing any number of configurations and reconfigurations of reference DNA
-sequences, and to describe paths through those graphs representing particular
-arrangements.
+good for bookkeeping; we want to be able to keep the parent sequences constant
+and add new child sequences to express new variants. Overall, this scheme allows
+us to create sequence graphs describing any number of configurations and
+reconfigurations of reference DNA sequences, and to describe paths through those
+graphs representing particular arrangements.
 */
 protocol Common {
 
