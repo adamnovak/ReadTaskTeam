@@ -5,10 +5,10 @@ not have any methods; it is merely a library of types.
 
 ##Sequences, Segments, and References
 
-A `Sequence` is a component in a sequence graph, optionally joined to other 
-`Sequence`s via `Join`s. It has to have length at least 1, but does not contain 
-base data itself - the base data is obtained with the `getSequenceBases()` method 
-call.
+A `Sequence` is a component in a sequence graph, optionally joined to other
+`Sequence`s via `Join`s. It has to have length at least 1, but does not contain
+base data itself - the base data is obtained with the `getSequenceBases()`
+method call.
 
 A `Segment` is a range on a `Sequence`. When you ask about the novel
 `Sequence`s that come in a `VariantSet`, you will get back `Segment`s covering
@@ -17,8 +17,8 @@ requirement that adjacent segments are joined by `Join`s.
 
 A `Reference` (defined in references.avdl) is part of a `ReferenceSet` which
 represents the reference sequence graph. It contains a `Segment` identifying
-the underlying `Sequence`.  The reason we do this rather than directly containing
-the `Sequence` is to allow generation of local `Reference`s and `ReferenceSet`s 
+the underlying `Sequence`. The reason we do this rather than directly containing
+the `Sequence` is to allow generation of local `Reference`s and `ReferenceSet`s
 from part of a larger one, e.g. the MHC region of chromosome 6.
 
 ##Sequence Graph Concepts
@@ -41,9 +41,9 @@ example where the top strand is GGTGGAG.
 
 A `Sequence` is a piece of double-stranded DNA composed of a series of DNA
 basepairs. In the default forward orientation a `Sequence` is specified by the
-DNA letters of its top strand, e.g. in this case GGTGGNG, where N indicates an
+DNA letters of its top strand, in this case GGTGGNG, where N indicates an
 unknown base. The basepairs are indexed left to right from 0 to 6 relative to
-this default orientation.  A `Sequence` containing regions of uncertainty,
+this default orientation. A `Sequence` containing regions of uncertainty,
 denoted by Ns, is called a scaffold, while a `Sequence` in which every base is
 known is called a contig. This `Sequence` is a scaffold.
 
@@ -67,10 +67,10 @@ position (2,+) is the exposed phosphate group of the top strand nick in the
 diagram above, and the position (3,-) is the same thing in  the bottom strand
 nick.
 
-To make the sequence graph we allow `Join`s between `Sequence`s.  A `Join` can
-be thought of as an unordered pair of (oriented) positions.  The orientation 
-determines which side of a base to join to, so which direction in each sequence
-a path will continue along when traversing the `Join`.  A `Join` can connect
+To make the sequence graph we allow `Join`s between `Sequence`s. A `Join` can be
+thought of as an unordered pair of (oriented) positions. The orientation
+determines which side of a base to join to, and thus in which direction in each
+sequence a path will continue when traversing the `Join`. A `Join` can connect
 two locations on the same sequence, resulting in a deletion, duplication or
 hairpin.
 
@@ -88,11 +88,7 @@ can be described as follows:
 
 ```
 Sequence with top strand GGTGGNG and ID "ref":
-startJoin = null
-start = (0,+)
 length = 7
-end = (6,-)
-endJoin = null
 ```
 
 Now suppose the DNA given above were broken into 3 parts, and repaired in a new
@@ -112,10 +108,9 @@ inserted at the first break, so the result would look like this:
 We would like to take the original sequence graph given above, and extend it
 with additional `Sequence`s to also describe this new observed variation.
 
-Since the added C/G basepair is novel DNA, an additional `Sequence`
-must be defined to carry it. Let us call the existing GGTGGNG reference
-`Sequence` ref" and the new `Sequence` "nov1". Thus, the new
-`Sequence` "nov1" looks like
+Since the added C/G basepair is novel DNA, an additional `Sequence` must be
+defined to carry it. Let us call the existing GGTGGNG reference `Sequence` "ref"
+and the new `Sequence` "nov1". Thus, the new `Sequence` "nov1" looks like
 
 ```
     "ref": "nov1":  "ref":
@@ -128,9 +123,9 @@ must be defined to carry it. Let us call the existing GGTGGNG reference
      +1-     +0-      -3+   <- coordinates
 ```
 
-In other words, it is a 1-basepair `Sequence`, with a start join to the "-" side
-of "ref"'s basepair at coordinate 1, and an end join to the "-" side of "ref"'s
-basepair at coordinate 3.
+In other words, it is a 1-basepair `Sequence`, with its "+" side joined to the
+"-" side of "ref"'s basepair at coordinate 1, and its "-" side joined to the "-"
+side of "ref"'s basepair at coordinate 3.
 
 The subgraph of our new `Sequence` graph involving "nov1" can be described as:
 
@@ -138,10 +133,10 @@ The subgraph of our new `Sequence` graph involving "nov1" can be described as:
 Sequence with top strand C and ID "nov1":
 length = 1
 
-Join at start of nov1 
+Join at start of "nov1"
 ends = [{(1,-), "ref"}, {(0,+), "nov1"}]
 
-Join at end of nov1
+Join at end of "nov1"
 ends = [{(0,-), "nov1"}, {(3,+), "ref"}]
 
 ```
@@ -149,71 +144,40 @@ ends = [{(0,-), "nov1"}, {(3,+), "ref"}]
 TODO EXERCISE FOR ADAM
 
 To describe the other new phosphodiester bonds that need to be added to the
-graph, between (2,+) and (4,+) in "ref", we need to create a new reference
-`Sequence` which contains no basepairs at all; it is the empty `Sequence` of DNA
-basepairs. Let the reference `Sequence` "nov2" be such a reference `Sequence`,
-with start and end joins set to describe these bonds. The reference `Sequence`
-"nov2" has no coordinates, and no positions. It looks like this
+graph, between (2,+) and (4,+) in "ref", we need to create a new `Join`:
 
 ```
-    "ref": "nov2":  "ref":
-
-      - 3' 5'    3' 5' -
- ...  A                G  ...
- ...  T                C  ...
-      - 5' 3'    5' 3' -
-
-     -2+              +4-   <- coordinates
+Join in middle of "ref"
+ends = [{(2,+), "ref"}, {(4,+), "ref"}]
 ```
 
-A reference `Sequence` with only start and end joins is describable with only
-start and end joins. The "nov2" reference `Sequence` would look
-like this:
-
-```
-Sequence with empty top strand and ID "nov2":
-startJoin = (2,+), "ref"
-start = null
-length = 0
-end = null
-endJoin = (4,+), "ref"
-```
-All its information will be in its startJoin and endJoin values.
-
-Defined by their top strands, we now have three reference `Sequence`s:
+Defined by their top strands, we now have two reference `Sequence`s:
 
 ```
 ref:    GGTGGNG
 nov1:   C
-nov2:   (empty)
 ```
 
-Each has its own 0-based coordinate system, although the coordinate system for
-"nov2" is empty.
+Each has its own 0-based coordinate system.
 
-The sequence graph formed by these three `Sequence`s is described as follows:
+The sequence graph formed by these `Sequence`s and our `Join`s is described as
+follows:
 
 ```
-1. Sequence with top strand GGTGGNG and ID "ref":
-startJoin = null
-start = (0,+)
+Sequence with top strand GGTGGNG and ID "ref":
 length = 7
-end = (6,-)
-endJoin = null
 
-2. Sequence with top strand C and ID "nov1":
-startJoin = (1,-), "ref"
-start = (0,+)
+Sequence with top strand C and ID "nov1":
 length = 1
-end = (0,-)
-endJoin = (3,-), "ref"
 
-3. Sequence with top strand empty and ID "nov2":
-startJoin = (2,+), "ref"
-start = null
-length = 0
-end = null
-endJoin = (4,+), "ref"
+Join at start of "nov1"
+ends = [{(1,-), "ref"}, {(0,+), "nov1"}]
+
+Join at end of "nov1"
+ends = [{(0,-), "nov1"}, {(3,+), "ref"}]
+
+Join in middle of "ref"
+ends = [{(2,+), "ref"}, {(4,+), "ref"}]
 ```
 
 It looks like this:
@@ -228,10 +192,10 @@ It looks like this:
 
 In this graph, there are two paths from (0,+) on "ref" to (6,-) on the same
 `Sequence`. One of them proceeds directly along "ref", and represents the un-
-rearranged condition, while one detours through "nov1" and "nov2", and
-represents the new configuration of double-stranded DNA that results from the
-inversion of the middle piece of "ref" and the insertion of the new basepair
-from "nov1".
+rearranged condition, while one detours through "nov1" and the three novel
+`Join`s, and represents the new configuration of double-stranded DNA that
+results from the inversion of the middle piece of "ref" and the insertion of the
+new basepair from "nov1".
 
 The un-rearranged path is describable by a list of a single `Segment`:
 
@@ -251,9 +215,9 @@ It looks like this:
        -----
 ```
 
-The rearranged path is describable by a list of 5 `Segment`s, 3 of which are the
-"contiguous pieces of the "ref" `Sequence`, and 2 of which describe the newly
-"added nov1" and "nov2" `Sequence`s:
+The rearranged path is describable by a list of 4 `Segment`s, 3 of which are the
+contiguous pieces of the "ref" `Sequence`, and one of which describes the newly
+added "nov1" `Sequence`:
 
 ```
 1. Segment with top strand GG in the "ref" reference sequence:
@@ -268,11 +232,7 @@ length = 1
 start = (3,-), "ref"
 length = 2
 
-4. Segment with top strand empty in the "nov2" reference sequence:
-start = (0,+), "nov2"
-length = 0
-
-5.  Segment with top strand GNG in the "ref" reference sequence:
+5. Segment with top strand GNG in the "ref" reference sequence:
 start = (4,+)
 length = 3
 ```
@@ -292,13 +252,12 @@ Notice that we always maintain the coordinate system on the reference
 corresponding to a nick in the bottom strand of the reference `Sequence`, and
 continuing on 2 basepairs in a right-to-left direction along the reference
 `Sequence`. It does not get new coordinates relative to its final orientation or
-position in the rearranged conformation. Also, all of the novel adjacencies in
-the sequence graph involve actual novel `Sequence`s, even if some of these are
-empty. This is good for bookkeeping; we want to be able to keep the parent
-`Sequence`s constant and add new child `Sequence`s to express new variants.
-Overall, this scheme allows us to create sequence graphs describing any number
-of configurations and reconfigurations of reference DNA sequences, and to
-describe paths through those graphs representing particular arrangements.
+position in the rearranged conformation. This is good for bookkeeping; we want
+to be able to keep the parent `Sequence`s constant and add new child `Sequence`s
+to express new variants. Overall, this scheme allows us to create sequence
+graphs describing any number of configurations and reconfigurations of reference
+DNA sequences, and to describe paths through those graphs representing
+particular arrangements.
 */
 protocol Common {
 
@@ -306,7 +265,8 @@ protocol Common {
 Indicates the DNA strand associate for some data item.
 * `POS_STRAND`:  The postive (+) strand.
 * `NEG_STRAND`: The negative (-) strand.
-Richard and Adam removed NO_STRAND.  Instead have a union with null if you want to support unstranded annotations.
+Richard and Adam removed NO_STRAND. Instead have a union with null if you want
+to support unstranded annotations.
 */
 enum Strand {
   POS_STRAND,
@@ -340,7 +300,7 @@ record Position {
   `Reference` sequence, or a novel piece of sequence associated with a
   `VariantSet`.
 
-  We allow a null value for sequenceId to support the original (pre-graph) model.
+  We allow a null value for sequenceId to support the "classic" model.
 
   If the server supports the "graph" mode, this must not be null.
   */
@@ -398,14 +358,14 @@ record Sequence {
   */
   string id;
   /**
-  The length of the sequence.  Must be greater than 0.
+  The length of the sequence. Must be greater than 0.
   */
   long length;
 }
 
 /**
-A `Segment` is a range on a `Sequence`. It does not include any base data. 
-(The bases for a `Sequence` are available through the `getSequenceBases()` API call.)
+A `Segment` is a range on a `Sequence`. It does not include any base data. (The
+bases for a `Sequence` are available through the `getSequenceBases()` API call.)
 
 In the sequence "GTGG", the `Segment` starting at index 1 on the forward strand
 with length 2 is the "TG" on the forward strand. The length-2 `Segment` starting
