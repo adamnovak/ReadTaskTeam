@@ -116,18 +116,17 @@ record SearchReferencesRequest {
   If present, return only references which belong to this reference set.
   */
   union { null, string } referenceSetId = null;
+  
+  /**
+  If nonempty, return only `Reference`s on `Sequence`s with IDs in the list.
+  */
+  union { null, string } sequenceIds = [];
 
   /**
   If nonempty, return references which match any of the given `md5checksums`.
   See `Reference::md5checksum` for details.
   */
   array<string> md5checksums = [];
-
-  /**
-  If nonempty, return references that are joined onto references with one of the
-  specified IDs.
-  */
-  array<string> parentReferenceIds = [];
 
   /**
   If nonempty, return references for which the accession
@@ -261,6 +260,67 @@ ListReferenceBasesResponse getReferenceBases(
   /** Additional request parameters to restrict the query. */
   ListReferenceBasesRequest request) throws GAException;
 
+/******************  /sequences/search  *********************/
+/**
+This request maps to the body of `POST /sequences/search` as JSON.
+*/
+record SearchSequencesRequest {
+  /**
+  If not null, return only `Sequence`s that appear in the indicated
+  `ReferenceSet`, or any included `ReferenceSet`s.
+  */
+  union { null, string } referenceSetId = null;
+  
+  /**
+  If not null, return only `Sequence`s that are novel in the indicated
+  `VariantSet`.
+  */
+  union { null, string } variantSetId = null;
+
+  /**
+  Specifies the maximum number of results to return in a single page.
+  If unspecified, a system default will be used.
+  */
+  union { null, int } pageSize = null;
+
+  /**
+  The continuation token, which is used to page through large result sets.
+  To get the next page of results, set this parameter to the value of
+  `nextPageToken` from the previous response.
+  */
+  union { null, string } pageToken = null;
+}
+
+/**
+This is the response from `POST /sequences/search` expressed as JSON.
+*/
+record SearchSequencesResponse {
+  /**
+  The list of matching `Sequence`s.
+  */
+  array<org.ga4gh.models.Sequence> sequences = [];
+
+  /**
+  The continuation token, which is used to page through large result sets.
+  Provide this value in a subsequent request to return the next page of
+  results. This field will be empty if there aren't any additional results.
+  */
+  union { null, string } nextPageToken = null;
+}
+
+/**
+Gets `Sequence`s that match the search criteria.
+
+`POST /sequences/search` must accept a JSON version of `SearchSequencesRequest`
+as the post body and will return a JSON version of `SearchSequencesResponse`.
+*/
+SearchSequencesResponse searchVariantSetSequences(
+  /**
+  This request maps to the body of `POST /sequences/search` as
+  JSON.
+  */
+  SearchSequencesRequest request) throws GAException;
+
 /****************  /sequences/{id}  *******************/
 /**
 Gets a `Sequence` by ID.
@@ -336,4 +396,99 @@ GetSequenceBasesResponse getSequenceBases(
     /** Additional request parameters to restrict the query. */
     GetSequenceBasesRequest request) throws GAException;
 
+/****************  /joins/search  *******************/
+/**
+This request maps to the body of `POST /joins/search`
+as JSON.
+*/
+record SearchJoinsRequest {
+  /**
+  If present, return only `Join`s which belong to this reference set.
+  */
+  union { null, string } referenceSetId = null;
+  
+  /**
+  If present, return only `Join`s which belong to this variant set.
+  */
+  union { null, string } variantSetId = null;
+
+  // TODO: Specify a proper sort of filter object instead of this. We want to be
+  // able to support a list of sequences, but also a single sequence and a
+  // range.
+
+  /**
+  If nonempty, return only `Join`s with at least one `Position` on one of these
+  sequences.
+  */
+  array<string> sequenceIds = [];
+  
+  /**
+  Must not contain more entries than `sequenceIds`.
+  
+  Return only `Join`s with at least one `Position` on the corresponding sequence
+  in `sequenceIds` at this index in the sequence or later.
+  */
+  array<long> starts = [];
+  
+  /**
+  Must not contain more entries than `starts`.
+  
+  Return only `Join`s with at least one `Position` on the corresponding sequence
+  in `sequenceIds` at or earlier than this many bases forward from the
+  corresponding entry in `starts`.
+  */
+  array<long> lengths = [];
+  
+  /**
+  Must not contain more entries than `sequenceIds`.
+  
+  Return only `Join`s which join onto the corresponding sequence in
+  `sequenceIds`, in the interval specified by the corresponding entries in
+  `starts` and `lengths` (if present), to the strand specified by each entry in
+  `strands`.
+  */
+  array<org.ga4gh.models.Strand> strands = [];
+
+  /**
+  Specifies the maximum number of results to return in a single page.
+  If unspecified, a system default will be used.
+  */
+  union { null, int } pageSize = null;
+
+  /**
+  The continuation token, which is used to page through large result sets.
+  To get the next page of results, set this parameter to the value of
+  `nextPageToken` from the previous response.
+  */
+  union { null, string } pageToken = null;
+}
+
+/**
+This is the response from `POST /joins/search` expressed as JSON.
+*/
+record SearchJoinsResponse {
+  /** The list of matching joins. */
+  array<org.ga4gh.models.Join> joins = [];
+
+  /**
+  The continuation token, which is used to page through large result sets.
+  Provide this value in a subsequent request to return the next page of
+  results. This field will be empty if there aren't any additional results.
+  */
+  union { null, string } nextPageToken = null;
+}
+
+/**
+Gets a list of `Join` matching the search criteria.
+
+`POST /joins/search` must accept a JSON version of
+`SearchJoinsRequest` as the post body and will return a JSON
+version of `SearchJoinsResponse`.
+*/
+SearchJoinsResponse searchJoins(
+  /**
+  This request maps to the body of `POST /joins/search`
+  as JSON.
+  */
+  SearchJoinsRequest request) throws GAException;
 }

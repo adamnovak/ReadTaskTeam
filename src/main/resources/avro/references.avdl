@@ -47,9 +47,9 @@ record Reference {
   union { null, Segment } segment = null;
 
   /**
-  The reference ID. Unique within the repository. 
-  In "classic" model a `Sequence` with this ID exists, containing the reference's bases. 
-  In "graph" the sequence is specified via the segment, and this is just an id.
+  The reference ID. Unique within the repository. In "classic" model a
+  `Sequence` with this ID exists, containing the reference's bases. In "graph"
+  the sequence is specified via the segment, and this is just an id.
   */
   string id;
 
@@ -140,10 +140,15 @@ record ReferenceSet {
   array<string> includedReferenceSets = null;
 
   /**
-  Order-independent MD5 checksum which identifies this `ReferenceSet`. The
-  checksum is computed by sorting all `reference.md5checksum` (for all
-  `reference` in this set, including any in any included set) in ascending 
-  lexicographic order, concatenating, and taking the MD5 of that value.
+  Order-independent MD5 checksum which identifies this `ReferenceSet`. 
+  
+  To compute this checksum, make a list of `Reference.md5checksum` for all
+  `Reference`s in this set, including any in any included set. Add to that list
+  a lower-case MD5 checksum for each `Join` in the `ReferenceSet` or any
+  included set, which is calculated by hashing the `md5checksum`, position as a
+  decomal string, and strand as "+" or "-" for the two `Position`s of the `Join`
+  in order. Then sort that list, and take the MD5 hash of all the strings
+  concatenated together. Express the hash as a lower-case hexadecimal string.
   */
   string md5checksum;
 
