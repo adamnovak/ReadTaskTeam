@@ -300,18 +300,21 @@ record Position {
 }
 
 /**
-Represents a join of one end of a "child" `Sequence` onto a certain side of a
-certain base in a "parent" `Sequence`.
+A `Join` is simply a pair of Position objects, which we call the sides. The are
+logically unordered (i.e. swapping makes no difference), but we require a rank
+on the Sequences, and so implicitly on the positions, so to avoid ambiguity we
+require that the position for side1 is less than that for side2.
 */
 record Join {
   /**
-  A join is simply a pair of Position objects, which we call the sides.
-  The are logically unordered (i.e. swapping makes no difference), but
-  we require a rank on the Sequences, and so implicitly on the positions,
-  so to avoid ambiguity we require that the position for side1 is less
-  than that for side2.
+  The lower-valued `Position` that this `Join` is joining.
   */
   Position side1;
+  
+  /**
+  The higher-valued `Position`, which this `Join` attaches to the side specified
+  by side1.
+  */
   Position side2;
 }
 
