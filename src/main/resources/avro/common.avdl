@@ -314,41 +314,6 @@ enum Strand {
 }
 
 /**
-Represents a join of one end of a "child" `Sequence` onto a certain side of a
-certain base in a "parent" `Sequence`.
-*/
-record Join {
-  /**
-  A join is simply a pair of Position objects, which we call the sides.
-  The are logically unordered (i.e. swapping makes no difference), but
-  we require a rank on the Sequences, and so implicitly on the positions,
-  so to avoid ambiguity we require that the position for side1 is less
-  than that for side2.
-  */
-  Position side1;
-  Position side2;
-}
-
-/**
-Represents a sequence in a sequence graph. May be joined onto parent
-`Sequence`(s) at the left and/or right endpoints, and may have other `Sequence`s
-as children.
-
-Does not include any base data. The bases for a `Sequence` are available through
-the `getSequenceBases()` API call.
-*/
-record Sequence {
-  /**
-  The ID of the sequence.
-  */
-  string id;
-  /**
-  The length of the sequence.  Must be greater than 0.
-  */
-  long length;
-}
-
-/**
 A `Position` is an oriented base in some already known sequence. A
 `Position` is represented by a sequence name or ID, a base number on that
 sequence (0-based), and a `Strand` to indicate the forward or reverse-complement
@@ -401,6 +366,41 @@ record Position {
   the reverse strand, or equivalently the right side of a base.
   */
   Strand strand;
+}
+
+/**
+Represents a join of one end of a "child" `Sequence` onto a certain side of a
+certain base in a "parent" `Sequence`.
+*/
+record Join {
+  /**
+  A join is simply a pair of Position objects, which we call the sides.
+  The are logically unordered (i.e. swapping makes no difference), but
+  we require a rank on the Sequences, and so implicitly on the positions,
+  so to avoid ambiguity we require that the position for side1 is less
+  than that for side2.
+  */
+  Position side1;
+  Position side2;
+}
+
+/**
+Represents a sequence in a sequence graph. May be joined onto parent
+`Sequence`(s) at the left and/or right endpoints, and may have other `Sequence`s
+as children.
+
+Does not include any base data. The bases for a `Sequence` are available through
+the `getSequenceBases()` API call.
+*/
+record Sequence {
+  /**
+  The ID of the sequence.
+  */
+  string id;
+  /**
+  The length of the sequence.  Must be greater than 0.
+  */
+  long length;
 }
 
 /**
