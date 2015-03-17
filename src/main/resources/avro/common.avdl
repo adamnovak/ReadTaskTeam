@@ -26,7 +26,7 @@ from part of a larger one, e.g. the MHC region of chromosome 6.
 Many of the types defined here are related to defining sequence graphs. Sequence
 graph concepts can be illustrated on a piece of double-stranded DNA with two
 nicks in it, one on the top strand and one on the bottom strand. Here is an
-example where the top strand is GGTGGAG.
+example where the top strand is GGTGGNG.
 
                 | <- top strand nick at position (2,+)
     5' -------  -------------------  3'
@@ -234,14 +234,14 @@ protocol Common {
 
 /**
 Indicates the DNA strand associate for some data item.
-* `POS_STRAND`:  The postive (+) strand.
 * `NEG_STRAND`: The negative (-) strand.
+* `POS_STRAND`:  The postive (+) strand.
 Richard and Adam removed NO_STRAND. Instead have a union with null if you want
 to support unstranded annotations.
 */
 enum Strand {
-  POS_STRAND,
-  NEG_STRAND
+  NEG_STRAND,
+  POS_STRAND
 }
 
 /**
@@ -259,6 +259,12 @@ the base at the `Position` is "A".
 Offsets added to a `Position` are interpreted as reading along its strand;
 adding to a reverse strand position actually subtracts from its `position`
 member.
+
+There is a total ordering on positions, assuming a total ordering on
+`Sequence`s. Positions are sorted by their `Sequence` (as specified by
+`sequenceId` and/or `referenceName`), then within a `Sequence` by their
+`position` offsets, and then finally by `Strand`, with `NEG_STRAND` first, then
+`POS_STRAND`.
 */
 record Position {
   /**
