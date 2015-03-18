@@ -262,7 +262,8 @@ ListReferenceBasesResponse getReferenceBases(
 
 /******************  /sequences/search  *********************/
 /**
-This request maps to the body of `POST /sequences/search` as JSON.
+This request maps to the body of `POST /sequences/search` as JSON. Specifies a
+number of filters, all of which must be satisfird by each result returned.
 */
 record SearchSequencesRequest {
   /**
@@ -272,8 +273,8 @@ record SearchSequencesRequest {
   union { null, string } referenceSetId = null;
   
   /**
-  If not null, return only `Sequence`s that are novel in the indicated
-  `VariantSet`.
+  If not null, return only `Sequence`s that are part of the indicated
+  `VariantSet`
   */
   union { null, string } variantSetId = null;
 
@@ -314,7 +315,7 @@ Gets `Sequence`s that match the search criteria.
 `POST /sequences/search` must accept a JSON version of `SearchSequencesRequest`
 as the post body and will return a JSON version of `SearchSequencesResponse`.
 */
-SearchSequencesResponse searchVariantSetSequences(
+SearchSequencesResponse searchSequences(
   /**
   This request maps to the body of `POST /sequences/search` as
   JSON.
@@ -398,8 +399,8 @@ GetSequenceBasesResponse getSequenceBases(
 
 /****************  /joins/search  *******************/
 /**
-This request maps to the body of `POST /joins/search`
-as JSON.
+This request maps to the body of `POST /joins/search` as JSON. Specifies a
+number of filters, all of which must be satisfird by each result returned.
 */
 record SearchJoinsRequest {
   /**

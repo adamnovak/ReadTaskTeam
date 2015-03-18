@@ -371,7 +371,7 @@ reference and alternate alleles of `Variant`s.
 Note that `Path`s cannot follow `Join`s not represented in the augmented
 sequence graph. For example, if  an `Allele` that spans a novel deletion is
 required, a new `Join` should exist to describe that deletion, available through
-`searchVariantSetJoins()`.
+`searchJoins()`.
 */
 record Allele {
   /**
@@ -387,8 +387,8 @@ record Allele {
   The ordered and oriented `Segment`s of DNA that this `Allele` represents.
 
   `Segment`s on this `Path` are on either `Reference` `Sequence`s, or
-  `Sequence`s available through the `searchVariantSetSequences()` API call in
-  this `VariantSet`.
+  `Sequence`s associated with this `VariantSet. Both types of `Sequence`s are
+  available through the `searchSequences()` and `getSequence()` API calls.
   */
   Path path;
 }

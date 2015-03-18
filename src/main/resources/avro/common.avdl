@@ -236,8 +236,6 @@ protocol Common {
 Indicates the DNA strand associate for some data item.
 * `NEG_STRAND`: The negative (-) strand.
 * `POS_STRAND`:  The postive (+) strand.
-Richard and Adam removed NO_STRAND. Instead have a union with null if you want
-to support unstranded annotations.
 */
 enum Strand {
   NEG_STRAND,
@@ -297,8 +295,12 @@ record Position {
   Strand the position is associated with. `POS_STRAND` represents the forward
   strand, or equivalently the left side of a base, and `NEG_STRAND` represents
   the reverse strand, or equivalently the right side of a base.
+
+  A null value here indicates a `Position` with an unknown or unimportant
+  orientation. Note that such `Position` objects are illegal in some contexts
+  (for example, within `Segment`s and `Join`s).
   */
-  Strand strand;
+  union { null, Strand } strand;
 }
 
 /**
@@ -309,13 +311,14 @@ require that the position for side1 is less than that for side2.
 */
 record Join {
   /**
-  The lower-valued `Position` that this `Join` is joining.
+  The lower-valued `Position` that this `Join` is joining. The `Position`'s
+  `strand` may not be null.
   */
   Position side1;
 
   /**
   The higher-valued `Position`, which this `Join` attaches to the side specified
-  by side1.
+  by side1. The `Position`'s `strand` may not be null.
   */
   Position side2;
 }
@@ -355,6 +358,8 @@ record Segment {
   /**
   The sequence ID and start index of this `Segment`. This base is the first
   included in the `Segment`, regardless of orientation.
+
+  The `strand` field of this `Position` may not be null.
   */
   Position start;
 
@@ -367,7 +372,7 @@ record Segment {
   out to the specified length.
 
   A `Segment` may have zero length (for example, when it is being used to
-  specify a `Path` consisting onyl of a `Join`.
+  specify a `Path` consisting only of a `Join`.
   */
   long length;
 }
@@ -383,10 +388,10 @@ record Path {
   by a `Join` from the right end of the first `Segment` to the left end of the
   second. `Segment`s appear in the order in which they occur when walking the
   path from one end to the other.
-  
+
   Note that the `Path` cannot follow two `Join`s in a row without traversing a
   `Segment`.
-  
+
   Two adjacent `Segment`s that could be combined must be combined. Adjacent
   `Segment`s should not be abutting on the same `Sequence`.
 
