@@ -418,7 +418,7 @@ record SearchJoinsRequest {
   // range.
 
   /**
-  If nonempty, return only `Join`s with at least one `Position` on one of these
+  If nonempty, return only `Join`s with at least one `Side` on one of these
   sequences.
   */
   array<string> sequenceIds = [];
@@ -426,7 +426,7 @@ record SearchJoinsRequest {
   /**
   Must not contain more entries than `sequenceIds`.
   
-  Return only `Join`s with at least one `Position` on the corresponding sequence
+  Return only `Join`s with at least one `Side` on the corresponding sequence
   in `sequenceIds` at this index in the sequence or later.
   */
   array<long> starts = [];
@@ -434,7 +434,7 @@ record SearchJoinsRequest {
   /**
   Must not contain more entries than `starts`.
   
-  Return only `Join`s with at least one `Position` on the corresponding sequence
+  Return only `Join`s with at least one `Side` on the corresponding sequence
   in `sequenceIds` at or earlier than this many bases forward from the
   corresponding entry in `starts`.
   */

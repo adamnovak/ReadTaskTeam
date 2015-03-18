@@ -157,7 +157,7 @@ record ReferenceSet {
   `Reference`s in this set, including any in any included set. Add to that list
   a lower-case MD5 checksum for each `Join` in the `ReferenceSet` or any
   included set, which is calculated by hashing the `md5checksum`, position as a
-  decimal string, and strand as "+" or "-" for the two `Position`s of the `Join`
+  decimal string, and strand as "+" or "-" for the two `Side`s of the `Join`
   in order. Then sort that list, and take the MD5 hash of all the strings
   concatenated together. Express the hash as a lower-case hexadecimal string.
   */
