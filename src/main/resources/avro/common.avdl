@@ -268,11 +268,6 @@ There is a total ordering on positions, assuming a total ordering on
 */
 record Position {
   /**
-  The name of the reference sequence in whatever reference set is being used.
-  Does not generally include a "chr" prefix, so for example "X" would be used
-  for the X chromosome.
-
-  /**
   The ID of the sequence on which the `Position` is located. This may be a
   `Reference` sequence, or a novel piece of sequence associated with a
   `VariantSet`.
@@ -284,8 +279,9 @@ record Position {
   union { null, string } sequenceId = null;
 
   /**
-  The name of the reference sequence on which the `Position` is located.
-  This is not used in the "graph" mode.
+  The name of the reference sequence in whatever reference set is being used.
+  Does not generally include a "chr" prefix, so for example "X" would be used
+  for the X chromosome.
 
   If `sequenceId` is null, this must not be null.
   */
