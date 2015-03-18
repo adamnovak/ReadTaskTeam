@@ -316,7 +316,7 @@ record Join {
   The lower-valued `Position` that this `Join` is joining.
   */
   Position side1;
-  
+
   /**
   The higher-valued `Position`, which this `Join` attaches to the side specified
   by side1.
@@ -369,6 +369,9 @@ record Segment {
   range (`start.position` - `length`, `start.position`]. This is equivalent to
   starting from the side indicated by `start`, and traversing through that base
   out to the specified length.
+
+  A `Segment` may have zero length (for example, when it is being used to
+  specify a `Path` consisting onyl of a `Join`.
   */
   long length;
 }
@@ -386,6 +389,9 @@ record Path {
   connected by an end join in one of the corresponding `Sequence`s. `Segment`s
   appear in the order in which they occur when walking the path from one end to
   the other.
+
+  "Sticky ends", or `Path`s that start or end in a `Join`, are specified by
+  "using a 0-length `Segment` at the start or end of the `Path`.
   */
   array<Segment> segments = [];
 }
