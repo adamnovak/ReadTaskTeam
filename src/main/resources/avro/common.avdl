@@ -380,18 +380,22 @@ record Segment {
 A `Path` is an ordered list of `Segment`s. In general any contiguous path
 through a sequence graph, with no novel adjacencies, can be represented by a
 `Path`.
-
-Can optionally include the joins at either end of the path.
 */
 record Path {
   /**
-  We require that one of each consecutive pair of `Segment`s in a `Path` be
-  connected by an end join in one of the corresponding `Sequence`s. `Segment`s
-  appear in the order in which they occur when walking the path from one end to
-  the other.
+  We require that each pair of consecutive `Segment`s in a `Path` be connected
+  by a `Join` from the right end of the first `Segment` to the left end of the
+  second. `Segment`s appear in the order in which they occur when walking the
+  path from one end to the other.
+  
+  Note that the `Path` cannot follow two `Join`s in a row without traversing a
+  `Segment`.
+  
+  Two adjacent `Segment`s that could be combined must be combined. Adjacent
+  `Segment`s should not be abutting on the same `Sequence`.
 
   "Sticky ends", or `Path`s that start or end in a `Join`, are specified by
-  "using a 0-length `Segment` at the start or end of the `Path`.
+  using a 0-length `Segment` at the start or end of the `Path`.
   */
   array<Segment> segments = [];
 }
