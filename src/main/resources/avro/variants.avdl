@@ -383,6 +383,9 @@ record Allele {
   /** The ID of the variant set this allele belongs to. */
   string variantSetId;
 
+  /** Optional name for the Allele */
+  union { null, string } name = null;
+
   /**
   The ordered and oriented `Segment`s of DNA that this `Allele` represents.
 
